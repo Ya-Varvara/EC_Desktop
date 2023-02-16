@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>901</width>
+    <height>603</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Электроразведка</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QStackedWidget" name="sectionStackedWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <widget class="QWidget" name="sectionStackedWidgetPage1"/>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QStackedWidget" name="graphicsStackedWidget">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <widget class="QWidget" name="graphicsStackedWidgetPage1"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>901</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="saveFileAction"/>
+   </widget>
+   <widget class="QMenu" name="modelMenu">
+    <property name="title">
+     <string>Модель</string>
+    </property>
+    <addaction name="openModelAction"/>
+    <addaction name="createModelAction"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Электроразведка</string>
+    </property>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>МТЗ</string>
+     </property>
+     <addaction name="loadFieldDataAction"/>
+     <addaction name="loadPeriodDataAction"/>
+     <addaction name="createPeriodDataAction"/>
+     <addaction name="separator"/>
+     <addaction name="directTaskAction"/>
+     <addaction name="inverseTaskAction"/>
+    </widget>
+    <addaction name="menu_2"/>
+    <addaction name="tdemAction"/>
+   </widget>
+   <addaction name="fileMenu"/>
+   <addaction name="modelMenu"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="projectTreeDockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>150</width>
+     <height>111</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QTreeWidget" name="projectTreeWidget">
+       <attribute name="headerVisible">
+        <bool>true</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="addInfoDockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>180</width>
+     <height>43</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4"/>
+  </widget>
+  <widget class="QDockWidget" name="infoDockWidget">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QTableWidget" name="infoTableWidget"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="separator"/>
+  </widget>
+  <action name="saveFileAction">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+  </action>
+  <action name="openModelAction">
+   <property name="text">
+    <string>Открыть модель</string>
+   </property>
+  </action>
+  <action name="createModelAction">
+   <property name="text">
+    <string>Создать модель</string>
+   </property>
+  </action>
+  <action name="tdemAction">
+   <property name="text">
+    <string>ЗСБ</string>
+   </property>
+  </action>
+  <action name="loadFieldDataAction">
+   <property name="text">
+    <string>Загрузить полевые данные</string>
+   </property>
+  </action>
+  <action name="loadPeriodDataAction">
+   <property name="text">
+    <string>Загрузить файл периодов</string>
+   </property>
+  </action>
+  <action name="createPeriodDataAction">
+   <property name="text">
+    <string>Создать файл периодов</string>
+   </property>
+  </action>
+  <action name="directTaskAction">
+   <property name="text">
+    <string>Расчитать прямую задачу</string>
+   </property>
+  </action>
+  <action name="inverseTaskAction">
+   <property name="text">
+    <string>Расчитать обратную задачу</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
