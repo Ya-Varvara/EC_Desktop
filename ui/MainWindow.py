@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowIcon(QIcon('zeva.ico'))
 
-        self.tree = TreeWidget()
+        self.tree = TreeWidget(self)
         self.ui.projectTreeDockWidget.setWidget(self.tree)
 
         self.initUI()
@@ -52,8 +52,33 @@ class MainWindow(QMainWindow):
         self.ui.toolBar.addAction(computeMTDAction)
         self.ui.toolBar.addAction(computeTDEMAction)
 
-        self.ui.projectTreeWidget.itemClicked.connect(self.tree_item_clicked)
+        # self.ui.projectTreeWidget.itemClicked.connect(self.tree_item_clicked)
     # end def init_ui
+
+    def delete_model(self, model_id):
+        model = self.models[model_id]
+        if isinstance(model, GridModel):
+            points = model.get_points()
+            for point in points:
+                if point.mtd_graph:
+                    self.ui.graphicsStackedWidget.removeWidget(point.mtd_graph)
+            self.ui.sectionStackedWidget.removeWidget(self.model_widgets[model_id])
+            self.model_widgets.pop(model_id)
+        elif isinstance(model, SimpleModel):
+            if model.mtd_graph:
+                self.ui.graphicsStackedWidget.removeWidget(model.mtd_graph)
+            self.ui.sectionStackedWidget.removeWidget(self.model_widgets[model_id])
+            self.model_widgets.pop(model_id)
+        self.current_model_id -= 1
+        self.models.pop(model_id)
+
+    def delete_point(self, point_name, model):
+        xy = point_name.split(' ')[1][1:-1].split(',')
+        point = model.find_point(int(xy[0]), int(xy[1]))
+        point.is_alive = False
+        self.ui.graphicsStackedWidget.removeWidget(point.mtd_graph)
+
+
 
     def get_mtd_data(self):
         dialog = mtdInputDialog()
@@ -78,13 +103,11 @@ class MainWindow(QMainWindow):
 
             self.ui.graphicsStackedWidget.addWidget(model.mtd_graph)
             self.ui.graphicsStackedWidget.setCurrentWidget(model.mtd_graph)
-            self.current_graphic_id = len(self.graphics_widgets) - 1
+            # self.current_graphic_id = len(self.graphics_widgets) - 1
             self.show()
 
             if isinstance(model, Point):
-                child = QTreeWidgetItem([f'Точка ({model.x},{model.y})'])
-                self.tree_top_items['model'].child(self.current_model_id).addChild(child)
-
+                self.tree.add_point(model)
         if isinstance(model, SimpleModel):
             print('Yes')
             if model.mtd_data is None:
@@ -149,6 +172,13 @@ class MainWindow(QMainWindow):
     # end def open_period_file
 
     def open_grid_model(self):
+        def is_name(str):
+            try:
+                float(str.split()[0])
+                return False
+            except ValueError:
+                return True
+
         file_path = self.open_data_file()
 
         if not file_path:
@@ -159,11 +189,25 @@ class MainWindow(QMainWindow):
             model = GridModel(file_path)
         else:
             with open(file_path, 'r') as f:
-                NT, T, Q = (float(x) for x in f.readline().split(' '))  # NT, T, Q
-                N = int(f.readline().strip())
-                Ro_list = [float(i) for i in f.readline().split()]
-                H_list = [float(i) for i in f.readline().split()]
-            model = SimpleModel(file_path, Ro_list, H_list, (NT, T, Q))
+                file_type = f.readline()
+                if is_name(file_type):
+                    name = f.readline()
+                    data = f.read().split('\n')
+                    Ro_list = []
+                    H_list = []
+                    for pair in data:
+                        if pair:
+                            rh = pair.split()
+                            Ro_list.append(float(rh[0]))
+                            if len(rh) > 1:
+                                H_list.append(float(rh[1]))
+                    model = SimpleModel(file_path, Ro_list, H_list)
+                else:
+                    NT, T, Q = (float(x) for x in file_type.split())  # NT, T, Q
+                    N = int(f.readline().strip())
+                    Ro_list = [float(i) for i in f.readline().split()]
+                    H_list = [float(i) for i in f.readline().split()]
+                    model = SimpleModel(file_path, Ro_list, H_list, (NT, T, Q))
         self.add_model(model)
     # end def open_model_data_file
 
@@ -194,14 +238,11 @@ class MainWindow(QMainWindow):
         self.ui.sectionStackedWidget.setCurrentWidget(self.model_widgets[self.current_model_id])
         self.show()
 
-        if model.file_path is None:
-            child = QTreeWidgetItem([f'Модель {self.current_model_id + 1}'])
-        else:
-            child = QTreeWidgetItem([os.path.basename(model.file_path)])
-        self.tree_top_items['model'].addChild(child)
+        self.tree.add_model(self.models[self.current_model_id])
 
     def set_graph_widget(self, model):
-        self.ui.graphicsStackedWidget.setCurrentWidget(model.mtd_graph)
+        if model.mtd_graph:
+            self.ui.graphicsStackedWidget.setCurrentWidget(model.mtd_graph)
     # end def set_graph_widget
 
     def set_model_widget(self, widget_id):

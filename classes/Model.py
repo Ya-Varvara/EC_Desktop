@@ -78,7 +78,7 @@ class Point:
 # end class Point
 
 class SimpleModel:
-    def __init__(self, model_file_path, Ro, H, freq_data):
+    def __init__(self, model_file_path, Ro, H, freq_data=None):
         self.file_path = model_file_path
         self.Ro = Ro
         self.H = H

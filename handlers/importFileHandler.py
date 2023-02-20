@@ -1,6 +1,12 @@
 import numpy as np
 
 def import_model(file_name):
+    def is_name(str):
+        try:
+            float(str)
+            return False
+        except ValueError:
+            return True
     with open(file_name, 'r') as f:
         file_type = f.readline().lower()
         if ('dsaa' in file_type):
@@ -13,11 +19,18 @@ def import_model(file_name):
             x = np.linspace(x_min, x_max, Nx)
             y = np.linspace(y_min, y_max, Ny)
             return 'dsaa', x, y, z, x_min, x_max, y_min, y_max, z_min, z_max, Nx, Ny
+        elif is_name(file_type):
+            name = f.readline()
+            data = f.read().split('\n')
+            Ro_list = []
+            H_list = []
+            for pair in data:
+                rh = pair.split()
+                Ro_list.append(rh[0])
+                H_list.append(rh[1])
+            return 'one row', Ro_list, H_list
         else:
-            N = int(file_type)
-            Ro_list = [float(i) for i in f.readline().split()]
-            H_list = [float(i) for i in f.readline().split()]
-            return 'one row', N, Ro_list, H_list
+            return None
 
 def import_sec(file_name):
     return np.loadtxt(file_name)
