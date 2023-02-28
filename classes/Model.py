@@ -3,13 +3,41 @@
 from handlers.importFileHandler import import_model
 from handlers.mtd import MT1D
 
+from ui.ModelPlotWidget import MTDPlotWidget
 
+# ============ Parent Classes ====================================
+class Method:
+    def __init__(self):
+        self.result_data = None
+        self.graph = None
+
+class OneColumnModel:
+    def __init__(self, Ro=None, H=None, freq=None):
+        self.Ro = Ro
+        self.H = H
+        self.freq_data = freq
+        self.methods = {}
+
+    def calculate_mt1d(self):
+        self.methods['mt1d'] = mtdMethod(self.freq_data)
+
+# ============ Child Classes ======================================
+
+# ======== Methods
+class mtdMethod(Method):
+    def __init__(self, data):
+        super(mtdMethod, self).__init__()
+        freq, Ro, H = data
+        self.result_data = MT1D(freq, len(Ro), H)
+        self.graph = MTDPlotWidget()
+        self.graph.draw_mtd_graph(self.result_data)
+
+# ======== Models
 class GridModel:
     def __init__(self, file_path):
         self.file_path = file_path
         res = import_model(file_path)
-        if res[0] == 'dsaa':
-            self.file_type, self.x, self.y, self.Vp, self.x_min, self.x_max, self.y_min, self.y_max, self.Vp_min, self.Vp_max, self.Nx, self.Ny = res
+        self.file_type, self.x, self.y, self.Vp, self.x_min, self.x_max, self.y_min, self.y_max, self.Vp_min, self.Vp_max, self.Nx, self.Ny = res
         self.points = None
         self.mtd_data = None
         self.tdem_data = None
@@ -43,6 +71,7 @@ class GridModel:
 
     def add_point(self, xy):
         point = Point(self, xy[0], xy[1])
+        self.get_data_for_mt1d(point)
         if self.points:
             self.points.append(point)
         else:
@@ -58,38 +87,22 @@ class GridModel:
     # end def add_point
 # end class GridModel
 
-class Point:
+class Point(OneColumnModel):
     def __init__(self, parent, x, y):
+        super(Point, self).__init__()
         self.parent = parent
         self.x = x
         self.y = y
-        self.mtd_result = None
         self.is_alive = True
-        self.Ro = None
-        self.H = None
-        self.mtd_graph = None
     # end def __init__
-
-    def get_mt1d(self):
-        if self.mtd_result is None:
-            self.mtd_result = MT1D(self.parent.mtd_data, len(self.Ro), self.Ro, self.H)
-        return self.mtd_result
-    # end def get_mtd
 # end class Point
 
-class SimpleModel:
+class SimpleModel(OneColumnModel):
     def __init__(self, model_file_path, Ro, H, freq_data=None):
+        super(SimpleModel, self).__init__(Ro, H, freq_data)
         self.file_path = model_file_path
-        self.Ro = Ro
-        self.H = H
-        self.mtd_data = freq_data
-        self.mtd_result = None
-        self.mtd_graph = None
-
-    def get_mt1d(self):
-        if self.mtd_result is None:
-            self.mtd_result = MT1D(self.mtd_data, len(self.Ro), self.Ro, self.H)
-        return self.mtd_result
+    # end def __init__
+# end class SimpleModel
 
 
 
