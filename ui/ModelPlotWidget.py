@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QAction, QMenu, QWidget, QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QAction, QMenu, QWidget, QVBoxLayout
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import Qt
 

@@ -6,9 +6,6 @@ from PyQt5.QtGui import QCursor
 
 from ui.base_ui.TreeWidget import Ui_Form
 
-from classes.Model import SimpleModel
-
-
 class TreeWidget(QWidget):
     def __init__(self, parent=None):
         super(TreeWidget, self).__init__()
@@ -39,10 +36,6 @@ class TreeWidget(QWidget):
         deleteAction = QAction('Удалить', self)
         deleteAction.triggered.connect(self.delete_model)
         self.popMenu.addAction(deleteAction)
-
-        # deletePointAction = QAction('Удалить точку', self)
-        # deletePointAction.triggered.connect(self.delete_point)
-        # self.popMenu.addAction(deletePointAction)
     # end def init_popMenu
 
     def show_popMenu(self):
@@ -63,9 +56,8 @@ class TreeWidget(QWidget):
                 for i in range(len(self.parent.models)):
                     if self.parent.models[i].file_path is not None and name == os.path.basename(self.parent.models[i].file_path):
                         self.parent.current_model_id = i
-            self.parent.set_model_widget(self.parent.current_model_id)
-            if isinstance(self.parent.models[self.parent.current_model_id], SimpleModel) and self.parent.models[self.parent.current_model_id].mtd_graph:
-                self.parent.set_graph_widget(self.parent.models[self.parent.current_model_id])
+            self.parent.set_model_widget(self.parent.models[self.parent.current_model_id])
+
         elif item not in self.tree_top_items.values():
             model = item.parent()
             for i in range(len(self.parent.models)):
@@ -73,7 +65,7 @@ class TreeWidget(QWidget):
                     self.parent.current_model_id = i
             coor = name.split(' ')[1][1:-1].split(',')
             point = self.parent.models[self.parent.current_model_id].find_point(int(coor[0]), int(coor[1]))
-            self.parent.set_model_widget(self.parent.current_model_id)
+            self.parent.set_model_widget(self.parent.models[self.parent.current_model_id])
             self.parent.set_graph_widget(point)
 
     # end def tree_item_clicked
@@ -82,7 +74,7 @@ class TreeWidget(QWidget):
         if model.file_path is None:
             child = QTreeWidgetItem([f'Модель {self.parent.current_model_id + 1}'])
         else:
-            child = QTreeWidgetItem([os.path.basename(model.file_path)])
+            child = QTreeWidgetItem([os.path.basename(model.file_path)                                                       ])
         self.tree[model] = child
         self.tree_top_items['model'].addChild(child)
     # end def add_model
