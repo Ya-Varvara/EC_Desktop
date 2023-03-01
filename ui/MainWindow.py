@@ -124,31 +124,6 @@ class MainWindow(QMainWindow):
         self.ui.statusbar.showMessage('Расчет TDEM1D', 1000)
     # end def calculate_tdem
 
-    # def tree_item_clicked(self):
-    #     item = self.ui.projectTreeWidget.currentItem()
-    #     print(item.text(0))
-    #     name = item.text(0)
-    #     if item.parent() in self.tree_top_items.values():
-    #         if 'Модель' in name:
-    #             self.current_model_id = int(name.split(' ')[1]) - 1
-    #         else:
-    #             for i in range(len(self.models)):
-    #                 if self.models[i].file_path is not None and name == os.path.basename(self.models[i].file_path):
-    #                     self.current_model_id = i
-    #         self.set_model_widget(self.current_model_id)
-    #         if isinstance(self.models[self.current_model_id], SimpleModel) and self.models[self.current_model_id].mtd_graph:
-    #             self.set_graph_widget(self.models[self.current_model_id])
-    #     elif item not in self.tree_top_items.values():
-    #         model = item.parent()
-    #         for i in range(len(self.models)):
-    #             if self.models[i].file_path is not None and model.text(0) == os.path.basename(self.models[i].file_path):
-    #                 self.current_model_id = i
-    #         coor = name.split(' ')[1][1:-1].split(',')
-    #         point = self.models[self.current_model_id].find_point(int(coor[0]), int(coor[1]))
-    #         self.set_model_widget(self.current_model_id)
-    #         self.set_graph_widget(point)
-    # end def tree_item_clicked
-
     def open_period_file(self):
         dialog = mtdInputDialog()
         dialog.show()
